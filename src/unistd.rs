@@ -2514,6 +2514,36 @@ mod setres {
 
         Errno::result(res).map(drop)
     }
+
+    /// Gets the real, effective, and saved uid.
+    /// ([see getresuid(2)](http://man7.org/linux/man-pages/man2/getresuid.2.html))
+    ///
+    /// * returns: tuple of real, effective and saved uids or libc error code.
+    ///
+    #[inline]
+    pub fn getresuid() -> Result<(Uid, Uid, Uid)> {
+        let mut ruid: u32 = 0;
+        let mut euid: u32 = 0;
+        let mut suid: u32 = 0;
+        let res = unsafe { libc::getresuid(&mut ruid, &mut euid, &mut suid) };
+
+        Errno::result(res).map(|_| (Uid(ruid), Uid(euid), Uid(suid)))
+    }
+
+    /// Gets the real, effective, and saved gid.
+    /// ([see getresgid(2)](http://man7.org/linux/man-pages/man2/getresgid.2.html))
+    ///
+    /// * returns: tuple of real, effective and saved gids or libc error code.
+    ///
+    #[inline]
+    pub fn getresgid() -> Result<(Gid, Gid, Gid)> {
+        let mut rgid: u32 = 0;
+        let mut egid: u32 = 0;
+        let mut sgid: u32 = 0;
+        let res = unsafe { libc::getresgid(&mut rgid, &mut egid, &mut sgid) };
+
+        Errno::result(res).map(|_| (Gid(rgid), Gid(egid), Gid(sgid)))
+    }
 }
 
 libc_bitflags!{

@@ -624,6 +624,27 @@ fn test_sysconf_unsupported() {
     assert!(open_max.expect("sysconf failed").is_none())
 }
 
+
+#[cfg(target_os = "linux")]
+#[test]
+fn test_getresuid() {
+    let resuid = getresuid().unwrap();
+    // Assume that tests are never run as root
+    assert!(resuid.0.as_raw() > 0);
+    assert!(resuid.1.as_raw() > 0);
+    assert!(resuid.2.as_raw() > 0);
+}
+
+#[cfg(target_os = "linux")]
+#[test]
+fn test_getresgid() {
+    let resgid = getresgid().unwrap();
+    // Assume that tests are never run as root
+    assert!(resgid.0.as_raw() > 0);
+    assert!(resgid.1.as_raw() > 0);
+    assert!(resgid.2.as_raw() > 0);
+}
+
 // Test that we can create a pair of pipes.  No need to verify that they pass
 // data; that's the domain of the OS, not nix.
 #[test]
